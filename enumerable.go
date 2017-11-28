@@ -217,6 +217,6 @@ func (e *DefaultEnumerable) ToArray() []interface{} {
 
 func (e *DefaultEnumerable) ToList() (List, error) {
 	return &DefaultList{
-		Enumerable: e,
+		DefaultEnumerable: e,
 	}, nil
 }

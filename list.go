@@ -8,9 +8,7 @@ type List interface {
 }
 
 type DefaultList struct {
-	Enumerable
-
-	source []interface{}
+	*DefaultEnumerable
 }
 
 func NewList() List {
@@ -20,13 +18,13 @@ func NewList() List {
 
 func NewListFromSource(source []interface{}) List {
 	return &DefaultList{
-		Enumerable: NewEnumerableFromSource(source),
-		source:     source,
+		DefaultEnumerable: NewEnumerableFromSource(source).(*DefaultEnumerable),
 	}
 }
 
 func (list *DefaultList) Add(item interface{}) {
 	list.source = append(list.source, item)
+
 }
 
 func (list *DefaultList) Remove(item interface{}) {
@@ -40,5 +38,5 @@ ForEnd:
 }
 
 func (list *DefaultList) AsEnumerable() Enumerable {
-	return list.Enumerable
+	return list.DefaultEnumerable
 }
