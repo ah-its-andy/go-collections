@@ -17,6 +17,8 @@ type Enumerable interface {
 	Single(predicate func(interface{}) bool) (interface{}, error)
 	SingleOrDefault(predicate func(interface{}) bool) (interface{}, error)
 
+	Contains(item interface{}) (bool, error)
+
 	ToList() (List, error)
 }
 
@@ -239,6 +241,12 @@ func (e *DefaultEnumerable) Range(r func(int32, interface{}) error) error {
 	}
 ForEnd:
 	return err
+}
+
+func (e *DefaultEnumerable) Contains(item interface{}) (bool, error) {
+	return e.Any(func(i interface{}) bool {
+		return i == item
+	})
 }
 
 func (e *DefaultEnumerable) GetEnumerator() Enumerator {
