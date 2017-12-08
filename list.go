@@ -11,8 +11,13 @@ type DefaultList struct {
 	*DefaultEnumerable
 }
 
-func NewList() List {
+func NewList(items ...interface{}) List {
 	source := make([]interface{}, 0)
+	if items != nil {
+		for _, item := range items {
+			source = append(source, item)
+		}
+	}
 	return NewListFromSource(source)
 }
 

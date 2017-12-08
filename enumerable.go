@@ -1,5 +1,7 @@
 package collections
 
+import "sync"
+
 type Enumerable interface {
 	Count() int32
 	Clear()
@@ -16,6 +18,43 @@ type Enumerable interface {
 	SingleOrDefault(predicate func(interface{}) bool) (interface{}, error)
 
 	ToList() (List, error)
+}
+
+func TryForEach(src Enumerable, r func(interface{}) error) error {
+	s := src.GetEnumerator()
+	s.Reset()
+	defer s.Reset()
+	var err error
+	for s.MoveNext() {
+		err = r(s.Current())
+		if err != nil {
+			goto ForEnd
+		}
+	}
+ForEnd:
+	return err
+}
+
+func ForEach(src Enumerable, r func(interface{})) {
+	s := src.GetEnumerator()
+	s.Reset()
+	defer s.Reset()
+	for s.MoveNext() {
+		r(s.Current())
+	}
+}
+
+func ForEachSync(src Enumerable, r func(interface{})) {
+	var wg sync.WaitGroup
+	wg.Add(int(src.Count()))
+	s := src.GetEnumerator()
+	s.Reset()
+	defer s.Reset()
+	for s.MoveNext() {
+		r(s.Current())
+		wg.Done()
+	}
+	wg.Wait()
 }
 
 type DefaultEnumerable struct {

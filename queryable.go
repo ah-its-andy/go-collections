@@ -191,7 +191,7 @@ func (q *DefaultQueryable) exec(source Enumerable, k QueryKind, args []interface
 
 func (q *DefaultQueryable) execWhere(source Enumerable, predicate func(interface{}) bool) Enumerable {
 	t := NewList()
-	ForEach(source.GetEnumerator(), func(v interface{}) {
+	ForEach(source, func(v interface{}) {
 		if predicate(v) {
 			t.Add(v)
 		}
@@ -202,7 +202,7 @@ func (q *DefaultQueryable) execWhere(source Enumerable, predicate func(interface
 func (q *DefaultQueryable) execSelect(source Enumerable, selector func(interface{}) interface{}) Enumerable {
 	s := NewList()
 	var item interface{}
-	ForEach(source.GetEnumerator(), func(v interface{}) {
+	ForEach(source, func(v interface{}) {
 		item = selector(v)
 		s.Add(item)
 	})
@@ -212,7 +212,7 @@ func (q *DefaultQueryable) execSelect(source Enumerable, selector func(interface
 func (q *DefaultQueryable) execGroupBy(source Enumerable, keySelector func(interface{}) interface{}) Enumerable {
 	m := make(map[interface{}]List, 0)
 	var key interface{}
-	ForEach(source.GetEnumerator(), func(v interface{}) {
+	ForEach(source, func(v interface{}) {
 		key = keySelector(v)
 		list, ok := m[key]
 		if ok {
@@ -279,7 +279,7 @@ func (s DESC) Less(i, j int) bool {
 func (q *DefaultQueryable) execOrderBy(source Enumerable, compare func(x interface{}, y interface{}) CompareResult) Enumerable {
 	items := make([]*SortableItem, 0)
 	var item *SortableItem
-	ForEach(source.GetEnumerator(), func(v interface{}) {
+	ForEach(source, func(v interface{}) {
 		item = &SortableItem{
 			v:       v,
 			compare: compare,
@@ -298,7 +298,7 @@ func (q *DefaultQueryable) execOrderBy(source Enumerable, compare func(x interfa
 func (q *DefaultQueryable) execOrderByDescending(source Enumerable, compare func(x interface{}, y interface{}) CompareResult) Enumerable {
 	items := make([]*SortableItem, 0)
 	var item *SortableItem
-	ForEach(source.GetEnumerator(), func(v interface{}) {
+	ForEach(source, func(v interface{}) {
 		item = &SortableItem{
 			v:       v,
 			compare: compare,
@@ -325,7 +325,7 @@ func (q *DefaultQueryable) execSkip(source Enumerable, count int32) Enumerable {
 func (q *DefaultQueryable) execSelectWhile(source Enumerable, predicate func(interface{}) bool, selector func(interface{}) interface{}) Enumerable {
 	s := NewList()
 	var item interface{}
-	ForEach(source.GetEnumerator(), func(v interface{}) {
+	ForEach(source, func(v interface{}) {
 		if predicate(v) {
 			item = selector(v)
 			s.Add(item)
@@ -336,7 +336,7 @@ func (q *DefaultQueryable) execSelectWhile(source Enumerable, predicate func(int
 
 func (q *DefaultQueryable) execSkipWhile(source Enumerable, predicate func(interface{}) bool) Enumerable {
 	s := NewList()
-	ForEach(source.GetEnumerator(), func(v interface{}) {
+	ForEach(source, func(v interface{}) {
 		if !predicate(v) {
 			s.Add(v)
 		}

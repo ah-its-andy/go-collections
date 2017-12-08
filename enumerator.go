@@ -6,28 +6,6 @@ type Enumerator interface {
 	Reset()
 }
 
-func TryForEach(src Enumerator, r func(interface{}) error) error {
-	src.Reset()
-	defer src.Reset()
-	var err error
-	for src.MoveNext() {
-		err = r(src.Current())
-		if err != nil {
-			goto ForEnd
-		}
-	}
-ForEnd:
-	return err
-}
-
-func ForEach(src Enumerator, r func(interface{})) {
-	src.Reset()
-	defer src.Reset()
-	for src.MoveNext() {
-		r(src.Current())
-	}
-}
-
 type DefaultEnumerator struct {
 	source []interface{}
 	index  int32
