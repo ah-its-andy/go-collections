@@ -17,3 +17,10 @@ func AsObject(item interface{}) Object {
 	}
 	return nil
 }
+
+func MustBoolean(b bool, err error) bool {
+	if err != nil {
+		return false
+	}
+	return b
+}
